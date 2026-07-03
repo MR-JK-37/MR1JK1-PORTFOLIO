@@ -11,16 +11,17 @@ if (process.env.VERCEL) {
     const dbPath = "/tmp/dev.db";
     const bundledDb = path.join(process.cwd(), "prisma", "dev.db");
 
-  try {
+    try {
         if (!fs.existsSync(dbPath)) {
-                fs.mkdirSync(path.dirname(dbPath), { recursive: true });
-                if (fs.existsSync(bundledDb)) {
-                          fs.copyFileSync(bundledDb, dbPath);
-                          console.log("Copied SQLite database to writeable /tmp path successfully");
-                }
+            fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+            if (fs.existsSync(bundledDb)) {
+                fs.copyFileSync(bundledDb, dbPath);
+                console.log("Copied SQLite database to writeable /tmp path successfully");
+            }
         }
-  } catch (error) {
+    } catch (error) {
         console.error("Failed to copy SQLite database to /tmp:", error);
+    }
   }
 }
 
