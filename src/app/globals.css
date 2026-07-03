@@ -1,0 +1,521 @@
+@import "tailwindcss";
+
+/* ========================================================================
+   MR!JK! PORTFOLIO — Design Token System
+   ======================================================================== */
+
+/* --- Registered Custom Properties for GPU-interpolated mask animation --- */
+@property --mouse-x {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --mouse-y {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --inner-size {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --outer-size {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --glow-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* --- Tailwind v4 Theme Extension --- */
+@theme {
+  --color-void: #070a0f;
+  --color-panel: #0c121b;
+  --color-panel-light: #111927;
+  --color-surface: #151d2b;
+  --color-blue: #45d3ff;
+  --color-blue-dim: #2a8aad;
+  --color-violet: #b273ff;
+  --color-violet-dim: #7a4db3;
+  --color-amber: #f0a63a;
+  --color-amber-dim: #b8802d;
+  --color-text-primary: #e8edf5;
+  --color-text-secondary: #8892a4;
+  --color-text-muted: #4a5568;
+  --color-border: #1e293b;
+  --color-border-glow: rgba(69, 211, 255, 0.15);
+
+  /* Font families — loaded via next/font, these are fallback stacks */
+  --font-display: "Chakra Petch", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  --font-accent: var(--font-accent);
+
+  /* Spacing scale */
+  --spacing-section: 6rem;
+  --spacing-section-sm: 4rem;
+
+  /* Border radius — asymmetric for organic feel */
+  --radius-card: 16px 8px 12px 10px;
+  --radius-card-alt: 10px 16px 8px 12px;
+  --radius-button: 8px 4px 8px 4px;
+  --radius-chip: 12px 8px 12px 8px;
+  --radius-full: 9999px;
+
+  /* Shadows & Neumorphism */
+  --shadow-card: 6px 6px 16px rgba(0, 0, 0, 0.55), -4px -4px 12px rgba(255, 255, 255, 0.02);
+  --shadow-card-hover: 8px 8px 24px rgba(0, 0, 0, 0.65), -6px -6px 18px rgba(69, 211, 255, 0.04);
+  --shadow-card-hover-violet: 8px 8px 24px rgba(0, 0, 0, 0.65), -6px -6px 18px rgba(178, 115, 255, 0.04);
+  --shadow-glow-blue: 0 0 25px rgba(69, 211, 255, 0.25), inset 0 0 10px rgba(69, 211, 255, 0.15);
+  --shadow-glow-violet: 0 0 25px rgba(178, 115, 255, 0.25), inset 0 0 10px rgba(178, 115, 255, 0.15);
+
+  /* Transitions */
+  --ease-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 600ms;
+
+  /* Z-index layers */
+  --z-base: 1;
+  --z-card: 10;
+  --z-nav: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+}
+
+/* --- Base Styles --- */
+:root {
+  color-scheme: dark;
+  scrollbar-color: var(--color-panel-light) var(--color-void);
+}
+
+* {
+  text-wrap: pretty;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+html {
+  background-color: var(--color-void);
+  color: var(--color-text-primary);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Scanline background overlay */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 9999;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+/* Focus management */
+:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* --- Section Utilities --- */
+.section-padding {
+  padding-block: var(--spacing-section);
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding-block: var(--spacing-section-sm);
+  }
+}
+
+.section-max-width {
+  max-width: 1280px;
+  margin-inline: auto;
+}
+
+/* --- Glass Panel --- */
+.glass-panel {
+  background: rgba(12, 18, 27, 0.75);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgba(69, 211, 255, 0.1);
+}
+
+/* --- Monospace Eyebrow Labels --- */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-blue);
+  opacity: 0.85;
+}
+
+.eyebrow-violet {
+  color: var(--color-violet);
+}
+
+/* --- Tactile Neumorphic Hacker Card --- */
+.card {
+  background: var(--color-panel);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+  border-color: rgba(69, 211, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.card-violet:hover {
+  box-shadow: var(--shadow-card-hover-violet);
+  border-color: rgba(178, 115, 255, 0.15);
+}
+
+.card-alt {
+  border-radius: var(--radius-card-alt);
+}
+
+/* --- Glow Effects --- */
+.glow-blue {
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.glow-violet {
+  box-shadow: var(--shadow-glow-violet);
+}
+
+/* --- Neumorphic Tactile Chip/Tag --- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  border-radius: var(--radius-chip);
+  background: rgba(69, 211, 255, 0.05);
+  border: 1px solid rgba(69, 211, 255, 0.25);
+  box-shadow: 0 0 15px rgba(69, 211, 255, 0.15);
+  color: var(--color-blue);
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.chip:hover {
+  background: rgba(69, 211, 255, 0.12);
+  border-color: rgba(69, 211, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.chip-violet {
+  color: var(--color-violet);
+}
+
+.chip-violet:hover {
+  background: rgba(178, 115, 255, 0.05);
+  border-color: rgba(178, 115, 255, 0.25);
+  box-shadow: 0 0 15px rgba(178, 115, 255, 0.15);
+  color: var(--color-violet);
+}
+
+/* --- Button --- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.8rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: var(--radius-button);
+  background: var(--color-panel);
+  color: var(--color-blue);
+  border: 1px solid rgba(69, 211, 255, 0.25);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), -2px -2px 6px rgba(255, 255, 255, 0.02), inset 0 0 0 rgba(69, 211, 255, 0);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(69, 211, 255, 0.1), transparent);
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-smooth);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  color: var(--color-void);
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+  box-shadow: 0 0 25px rgba(69, 211, 255, 0.4), 6px 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+.btn-primary:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.8rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: var(--radius-button);
+  background: var(--color-panel);
+  color: var(--color-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), -2px -2px 6px rgba(255, 255, 255, 0.01);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  text-decoration: none;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--color-violet);
+  color: var(--color-violet);
+  background: rgba(178, 115, 255, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(178, 115, 255, 0.25), 6px 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Poster/Stroke Typography --- */
+.poster-stroke-text {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(69, 211, 255, 0.08);
+  letter-spacing: 0.08em;
+  user-select: none;
+  line-height: 0.8;
+}
+
+.poster-stroke-text-violet {
+  -webkit-text-stroke: 1.5px rgba(178, 115, 255, 0.08);
+}
+
+/* --- Glitch Animations --- */
+.glitch-hover:hover {
+  animation: textGlitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+@keyframes textGlitch {
+  0% {
+    text-shadow: 0.5px 0 0 rgba(255,0,0,0.5), -0.5px 0 0 rgba(0,0,255,0.5);
+    transform: translate(0);
+  }
+  20% {
+    text-shadow: -1px 0 0 rgba(255,0,0,0.5), 1px 0 0 rgba(0,0,255,0.5);
+    transform: translate(-1px, 1px);
+  }
+  40% {
+    text-shadow: 1px -1px 0 rgba(255,0,0,0.5), -1px 1px 0 rgba(0,0,255,0.5);
+    transform: translate(1px, -1px);
+  }
+  60% {
+    text-shadow: -0.5px 1px 0 rgba(255,0,0,0.5), 0.5px -1px 0 rgba(0,0,255,0.5);
+    transform: translate(-0.5px, 0.5px);
+  }
+  80% {
+    text-shadow: 1px 0.5px 0 rgba(255,0,0,0.5), -1px -0.5px 0 rgba(0,0,255,0.5);
+    transform: translate(0.5px, -0.5px);
+  }
+  100% {
+    text-shadow: 0 0 0 rgba(255,0,0,0.5), 0 0 0 rgba(0,0,255,0.5);
+    transform: translate(0);
+  }
+}
+
+/* --- Terminal Card --- */
+.terminal {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+}
+
+.terminal-body {
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+
+/* --- Organic SVG Divider --- */
+.section-divider {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-block: -2px;
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-night-layer {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+    opacity: 0.5 !important;
+  }
+}
+
+/* --- Keyframes --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes idle-sweep {
+  0% {
+    --mouse-x: 20%;
+    --mouse-y: 60%;
+    --inner-size: 0px;
+    --outer-size: 0px;
+  }
+  10% {
+    --inner-size: 140px;
+    --outer-size: 200px;
+  }
+  50% {
+    --mouse-x: 80%;
+    --mouse-y: 40%;
+    --inner-size: 160px;
+    --outer-size: 220px;
+  }
+  90% {
+    --inner-size: 140px;
+    --outer-size: 200px;
+  }
+  100% {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+    --inner-size: 0px;
+    --outer-size: 0px;
+  }
+}
+
+/* --- Content Visibility for Below-Fold Sections --- */
+.section-lazy {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 600px;
+}
+
+/* --- Neumorphic Admin Panel / Form Fields --- */
+.neu-input {
+  background: var(--color-panel);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-button);
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.6), inset -2px -2px 6px rgba(255, 255, 255, 0.01);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  outline: none;
+}
+
+.neu-input:focus {
+  border-color: rgba(69, 211, 255, 0.35);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(69, 211, 255, 0.15);
+}
+
+/* --- Infinite Scroll Marquee Carousel --- */
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-33.333%, 0, 0);
+  }
+}
+
+.marquee-container {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
+}
+
+.marquee-content {
+  display: flex;
+  gap: 2rem;
+  animation: marquee 25s linear infinite;
+}
+
+.marquee-container:hover .marquee-content {
+  animation-play-state: paused;
+}
