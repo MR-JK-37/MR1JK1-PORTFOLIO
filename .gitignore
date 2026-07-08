@@ -50,3 +50,8 @@ next-env.d.ts
 
 # user uploads
 /public/uploads/media/
+
+# gh CLI (binary artifacts)
+/gh_*
+gh
+gh.tar.gz
