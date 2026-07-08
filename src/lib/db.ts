@@ -22,7 +22,6 @@ if (process.env.VERCEL) {
     } catch (error) {
         console.error("Failed to copy SQLite database to /tmp:", error);
     }
-  }
 }
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient();
