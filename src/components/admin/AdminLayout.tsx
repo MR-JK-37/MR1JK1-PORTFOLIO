@@ -11,6 +11,9 @@ import { CertsEditor } from "./CertsEditor";
 import { EducationEditor } from "./EducationEditor";
 import { ExtraEditor } from "./ExtraEditor";
 import { HeroMediaEditor } from "./HeroMediaEditor";
+import { AppearanceEditor } from "./AppearanceEditor";
+import { ParticipationEditor } from "./ParticipationEditor";
+import { MemoriesEditor } from "./MemoriesEditor";
 
 interface AdminLayoutProps {
   isFirstRun: boolean;
@@ -103,6 +106,9 @@ export function AdminLayout({ isFirstRun: initialFirstRun }: AdminLayoutProps) {
             { id: "education", label: "Education" },
             { id: "extra", label: "Extra-Curricular" },
             { id: "hero-images", label: "Hero Media" },
+            { id: "appearance", label: "Appearance" },
+            { id: "participation", label: "Participation" },
+            { id: "memories", label: "Memories" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -139,6 +145,9 @@ export function AdminLayout({ isFirstRun: initialFirstRun }: AdminLayoutProps) {
           {activeTab === "education" && <EducationEditor showToast={showToast} />}
           {activeTab === "extra" && <ExtraEditor showToast={showToast} />}
           {activeTab === "hero-images" && <HeroMediaEditor showToast={showToast} />}
+          {activeTab === "appearance" && <AppearanceEditor showToast={showToast} />}
+          {activeTab === "participation" && <ParticipationEditor showToast={showToast} />}
+          {activeTab === "memories" && <MemoriesEditor showToast={showToast} />}
         </div>
       </main>
     </div>

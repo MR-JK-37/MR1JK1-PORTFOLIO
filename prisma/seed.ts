@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { V1_ORIGINAL_TOKENS, V2_CINEMATIC_TOKENS } from "../src/lib/theme";
 
 const prisma = new PrismaClient();
 
@@ -119,32 +120,6 @@ const seedData: Array<{ type: string; key: string; value: unknown }> = [
     ],
   },
   {
-    type: "certifications",
-    key: "all",
-    value: [
-      { title: "APISEC Certification", detail: "API Security and vulnerability testing" },
-      { title: "COFPS", detail: "Certified Online Fraud Prevention Specialist" },
-      {
-        title: "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate",
-        detail: "",
-      },
-    ],
-  },
-  {
-    type: "achievements",
-    key: "all",
-    value: [
-      { title: "1st Place — CTF, AI & ML Dept.", detail: "St. Joseph's College of Engineering" },
-      { title: "1st Place — V-Vertex CTF", detail: "VIT College" },
-      { title: "8th Place — DEFCON-conducted CTF", detail: "Team event, international level" },
-      { title: "Top 26 of 300+", detail: "TN Government Police CTF Finals" },
-      {
-        title: "3rd Place — Brain Storm Competition",
-        detail: "Debugging, PPT & Hackathon, Dhanalakshmi Engineering College",
-      },
-    ],
-  },
-  {
     type: "education",
     key: "all",
     value: [
@@ -181,14 +156,28 @@ const seedData: Array<{ type: string; key: string; value: unknown }> = [
   },
 ];
 
+// Certification data for new dedicated model
+const certificationsSeed = [
+  { title: "APISEC Certification", issuer: "APIsec University", description: "API Security and vulnerability testing", order: 0 },
+  { title: "COFPS", issuer: "COFPS", description: "Certified Online Fraud Prevention Specialist", order: 1 },
+  { title: "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate", issuer: "Oracle", description: "Cloud AI foundations certification", order: 2 },
+];
+
+// Achievement data for new dedicated model
+const achievementsSeed = [
+  { title: "1st Place — CTF, AI & ML Dept.", org: "St. Joseph's College of Engineering", description: "College-level CTF competition victory", order: 0 },
+  { title: "1st Place — V-Vertex CTF", org: "VIT College", description: "Inter-college CTF competition victory", order: 1 },
+  { title: "8th Place — DEFCON-conducted CTF", org: "DEFCON", description: "Team event, international level", order: 2 },
+  { title: "Top 26 of 300+", org: "TN Government", description: "TN Government Police CTF Finals", order: 3 },
+  { title: "3rd Place — Brain Storm Competition", org: "Dhanalakshmi Engineering College", description: "Debugging, PPT & Hackathon", order: 4 },
+];
+
 async function main() {
   console.log("🌱 Seeding database...");
 
+  // Seed SiteContent (existing)
   for (const item of seedData) {
-    const value =
-      typeof item.value === "string"
-        ? JSON.stringify(item.value)
-        : JSON.stringify(item.value);
+    const value = JSON.stringify(item.value);
 
     await prisma.siteContent.upsert({
       where: {
@@ -202,8 +191,56 @@ async function main() {
       },
     });
   }
+  console.log("✅ SiteContent seeded —", seedData.length, "entries.");
 
-  console.log("✅ Seed complete — inserted", seedData.length, "content entries.");
+  // Seed Certifications (new dedicated model)
+  for (const cert of certificationsSeed) {
+    const existing = await prisma.certification.findFirst({ where: { title: cert.title } });
+    if (!existing) {
+      await prisma.certification.create({ data: cert });
+    }
+  }
+  console.log("✅ Certifications seeded —", certificationsSeed.length, "entries.");
+
+  // Seed Achievements (new dedicated model)
+  for (const ach of achievementsSeed) {
+    const existing = await prisma.achievement.findFirst({ where: { title: ach.title } });
+    if (!existing) {
+      await prisma.achievement.create({ data: ach });
+    }
+  }
+  console.log("✅ Achievements seeded —", achievementsSeed.length, "entries.");
+
+  // Seed Theme Versions
+  const v1 = await prisma.themeVersion.upsert({
+    where: { label: "v1-original" },
+    update: { tokensJson: JSON.stringify(V1_ORIGINAL_TOKENS) },
+    create: {
+      label: "v1-original",
+      tokensJson: JSON.stringify(V1_ORIGINAL_TOKENS),
+    },
+  });
+  console.log("✅ Theme v1-original saved with ID:", v1.id);
+
+  const v2 = await prisma.themeVersion.upsert({
+    where: { label: "v2-cinematic" },
+    update: { tokensJson: JSON.stringify(V2_CINEMATIC_TOKENS) },
+    create: {
+      label: "v2-cinematic",
+      tokensJson: JSON.stringify(V2_CINEMATIC_TOKENS),
+    },
+  });
+  console.log("✅ Theme v2-cinematic saved with ID:", v2.id);
+
+  // Set active theme to v1-original
+  await prisma.appSettings.upsert({
+    where: { id: "singleton" },
+    update: { activeThemeId: v1.id },
+    create: { id: "singleton", activeThemeId: v1.id },
+  });
+  console.log("✅ Active theme set to v1-original.");
+
+  console.log("\n🎉 Seed complete!");
   console.log("ℹ️  No admin user created — use the /admin setup flow to create one.");
 }
 

@@ -59,10 +59,12 @@ export function Experience({ entries }: ExperienceProps) {
                 />
 
                 <TiltCard
-                  className={i % 2 === 0 ? "card" : "card card-violet"}
+                  className={`cyber-card-wrapper ${
+                    i % 2 === 0 ? "cyber-card-wrapper-blue" : "cyber-card-wrapper-violet"
+                  }`}
                   glowColor={i % 2 === 0 ? "blue" : "violet"}
                 >
-                  <div className="p-6 md:p-8">
+                  <div className="cyber-card-inner p-6 md:p-8">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
                       <div>
                         <h3

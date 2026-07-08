@@ -1,28 +1,34 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 
 interface NavProps {
   links?: { github?: string; linkedin?: string; tryhackme?: string };
+  forceVisible?: boolean; // When true (e.g. /memories page), skip scroll-gate
 }
 
 const sections = [
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
   { label: "Experience", href: "#experience" },
+  { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];
 
-export function Nav({ links }: NavProps) {
+export function Nav({ links, forceVisible }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const [memoriesVisible, setMemoriesVisible] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+
+      // Scrollspy for sections
+      if (forceVisible) return; // No scrollspy on /memories page
 
       const scrollPos = window.scrollY + 300;
       let currentActive = "";
@@ -43,7 +49,33 @@ export function Nav({ links }: NavProps) {
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [forceVisible]);
+
+  // IntersectionObserver for footer to reveal "Memories" nav item
+  useEffect(() => {
+    if (forceVisible) {
+      setMemoriesVisible(true);
+      return;
+    }
+
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+
+    observerRef.current = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setMemoriesVisible(true);
+        }
+      },
+      { threshold: 0.8 } // 80% of footer visible
+    );
+
+    observerRef.current.observe(footer);
+
+    return () => {
+      observerRef.current?.disconnect();
+    };
+  }, [forceVisible]);
 
   /* Lock body scroll when mobile menu is open */
   useEffect(() => {
@@ -61,18 +93,22 @@ export function Nav({ links }: NavProps) {
     setMobileOpen(false);
   }, []);
 
+  const allNavItems = forceVisible
+    ? [{ label: "← Home", href: "/" }, { label: "Memories", href: "/memories" }]
+    : sections;
+
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-          scrolled
-            ? "glass-panel shadow-lg"
-            : "bg-transparent"
+        className={`fixed left-1/2 -translate-x-1/2 z-[100] transition-all duration-500 rounded-full border ${
+          scrolled || forceVisible
+            ? "top-3 w-[90%] max-w-5xl h-12 px-6 border-border/40 bg-panel/60 backdrop-blur-xl shadow-[var(--shadow-card)]"
+            : "top-6 w-[95%] max-w-6xl h-16 px-8 border-transparent bg-transparent shadow-none backdrop-blur-none"
         }`}
         role="navigation"
         aria-label="Main navigation"
       >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="w-full h-full flex items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
@@ -96,9 +132,18 @@ export function Nav({ links }: NavProps) {
 
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-8">
-            {sections.map((s) => {
+            {allNavItems.map((s) => {
               const isActive = activeSection === s.href;
-              return (
+              const isExternal = s.href.startsWith("/");
+              return isExternal ? (
+                <Link
+                  key={s.href}
+                  href={s.href}
+                  className="relative pb-1 text-xs font-[family-name:var(--font-mono)] tracking-wider uppercase transition-colors duration-300 text-text-secondary hover:text-text-primary"
+                >
+                  {s.label}
+                </Link>
+              ) : (
                 <a
                   key={s.href}
                   href={s.href}
@@ -115,6 +160,25 @@ export function Nav({ links }: NavProps) {
                 </a>
               );
             })}
+
+            {/* Memories — scroll-gated */}
+            {!forceVisible && (
+              <Link
+                href="/memories"
+                className={`relative pb-1 text-xs font-[family-name:var(--font-mono)] tracking-wider uppercase transition-all duration-500 ${
+                  memoriesVisible
+                    ? "opacity-100 translate-x-0 text-amber hover:text-amber/80"
+                    : "opacity-0 translate-x-4 pointer-events-none"
+                }`}
+                style={{
+                  textShadow: memoriesVisible
+                    ? "0 0 20px rgba(240,166,58,0.3)"
+                    : "none",
+                }}
+              >
+                Memories ✦
+              </Link>
+            )}
 
             {/* Social icons */}
             {links?.github && (
@@ -216,6 +280,25 @@ export function Nav({ links }: NavProps) {
               {s.label}
             </a>
           ))}
+
+          {/* Memories link in mobile menu — only visible when scroll-gated */}
+          {memoriesVisible && (
+            <Link
+              href="/memories"
+              onClick={handleNavClick}
+              className="text-2xl font-[family-name:var(--font-display)] font-semibold text-amber hover:text-amber/80 transition-colors"
+              style={{
+                opacity: mobileOpen ? 1 : 0,
+                transform: mobileOpen ? "translateY(0)" : "translateY(20px)",
+                transition: `opacity 0.3s ease ${sections.length * 0.08 + 0.2}s, transform 0.3s ease ${sections.length * 0.08 + 0.2}s`,
+              }}
+            >
+              <span className="text-amber font-[family-name:var(--font-mono)] text-sm mr-3">
+                ✦
+              </span>
+              Memories
+            </Link>
+          )}
 
           {/* Social row */}
           <div

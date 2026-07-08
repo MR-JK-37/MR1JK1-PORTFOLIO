@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Chakra_Petch, Inter, JetBrains_Mono, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { LenisProvider } from "@/components/shared/LenisProvider";
+import { ThemeProvider } from "@/components/shared/ThemeProvider";
+import { getActiveTheme } from "@/lib/theme";
 
 const chakraPetch = Chakra_Petch({
   subsets: ["latin"],
@@ -58,18 +60,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const activeTheme = await getActiveTheme();
+
   return (
     <html
       lang="en"
       className={`${chakraPetch.variable} ${inter.variable} ${jetbrainsMono.variable} ${dancingScript.variable}`}
+      suppressHydrationWarning
     >
-      <body>
-        <LenisProvider>{children}</LenisProvider>
+      <body suppressHydrationWarning>
+        <ThemeProvider tokens={activeTheme.tokens}>
+          <LenisProvider>{children}</LenisProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

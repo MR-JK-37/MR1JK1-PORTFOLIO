@@ -56,17 +56,13 @@ export function Projects({ projects }: ProjectsProps) {
             >
               <div className="h-full">
                 <TiltCard
-                  className={i % 2 === 0 ? "card h-full" : "card card-violet h-full"}
+                  className={`cyber-card-wrapper h-full ${
+                    i % 2 === 0 ? "cyber-card-wrapper-blue" : "cyber-card-wrapper-violet"
+                  }`}
                   glowColor={i % 2 === 0 ? "blue" : "violet"}
                 >
                 <div
-                  className="p-6 md:p-8 h-full flex flex-col"
-                  style={{
-                    borderRadius:
-                      i % 2 === 0
-                        ? "var(--radius-card)"
-                        : "var(--radius-card-alt)",
-                  }}
+                  className="cyber-card-inner p-6 md:p-8 h-full flex flex-col"
                 >
                   {/* Project number */}
                   <span

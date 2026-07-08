@@ -7,15 +7,34 @@ import { Skills } from "@/components/public/Skills";
 import { Experience } from "@/components/public/Experience";
 import { Projects } from "@/components/public/Projects";
 import { Certifications } from "@/components/public/Certifications";
+import { Participation } from "@/components/public/Participation";
 import { Education } from "@/components/public/Education";
 import { Contact } from "@/components/public/Contact";
 import { Footer } from "@/components/public/Footer";
-import { getPublicContent } from "@/lib/content";
+import {
+  getPublicContent,
+  getCertifications,
+  getAchievements,
+  getParticipations,
+} from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const content = await getPublicContent();
+  const [content, certifications, achievements, participations] =
+    await Promise.all([
+      getPublicContent(),
+      getCertifications(),
+      getAchievements(),
+      getParticipations(),
+    ]);
+
+  console.log("HOMEPAGE FETCH:", {
+    certificationsCount: certifications.length,
+    achievementsCount: achievements.length,
+    participationsCount: participations.length,
+    DATABASE_URL: process.env.DATABASE_URL
+  });
 
   return (
     <main>
@@ -60,9 +79,24 @@ export default async function HomePage() {
       <SectionDivider variant={5} toColor="var(--color-panel)" />
 
       <Certifications
-        certifications={content.certifications}
-        achievements={content.achievements}
+        certifications={certifications}
+        achievements={achievements}
       />
+
+      {participations.length > 0 && (
+        <>
+          <SectionDivider
+            variant={3}
+            flip
+            fromColor="var(--color-panel)"
+            toColor="var(--color-void)"
+          />
+
+          <SectionDivider variant={4} toColor="var(--color-panel)" />
+
+          <Participation participations={participations} />
+        </>
+      )}
 
       <SectionDivider
         variant={1}

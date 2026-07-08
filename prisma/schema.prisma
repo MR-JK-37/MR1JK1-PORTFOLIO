@@ -37,3 +37,88 @@ model Upload {
   size      Int
   createdAt DateTime @default(now())
 }
+
+// === Theme System (Part 0) ===
+
+model ThemeVersion {
+  id         String   @id @default(cuid())
+  label      String   @unique
+  tokensJson String   // Full JSON of all design tokens
+  createdAt  DateTime @default(now())
+}
+
+model AppSettings {
+  id            String @id @default("singleton")
+  activeThemeId String @default("")
+}
+
+// === Dedicated Content Models (Part 2) ===
+
+model Certification {
+  id              String   @id @default(cuid())
+  title           String
+  issuer          String   @default("")
+  description     String   @default("")
+  detailedContent String   @default("")
+  imageUrl        String   @default("")
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model Achievement {
+  id              String   @id @default(cuid())
+  title           String
+  org             String   @default("")
+  description     String   @default("")
+  detailedContent String   @default("")
+  imageUrl        String   @default("")
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model Participation {
+  id              String   @id @default(cuid())
+  title           String
+  description     String   @default("")
+  detailedContent String   @default("")
+  imageUrl        String   @default("")
+  certificateUrl  String   @default("")
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model MemoryCategory {
+  id     String        @id @default(cuid())
+  label  String
+  slug   String        @unique
+  order  Int           @default(0)
+  events MemoryEvent[]
+}
+
+model MemoryEvent {
+  id               String         @id @default(cuid())
+  categoryId       String
+  category         MemoryCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title            String
+  shortDescription String         @default("")
+  detailedContent  String         @default("")
+  order            Int            @default(0)
+  createdAt        DateTime       @default(now())
+}
+
+model MediaAsset {
+  id            String  @id @default(cuid())
+  ownerType     String  // "certification" | "achievement" | "participation" | "memoryEvent"
+  ownerId       String
+  type          String  // "image" | "video"
+  originalUrl   String
+  compressedUrl String  @default("")
+  thumbnailUrl  String  @default("")
+  isCover       Boolean @default(false)
+  width         Int     @default(0)
+  height        Int     @default(0)
+  sizeBytes     Int     @default(0)
+  order         Int     @default(0)
+
+  @@index([ownerType, ownerId])
+}

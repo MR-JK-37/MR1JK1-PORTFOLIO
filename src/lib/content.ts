@@ -114,44 +114,6 @@ const defaultContent = {
       stack: ["Python", "Scikit-Learn", "Pandas", "MySQL"],
     },
   ],
-  certifications: [
-    {
-      title: "APISEC Certification",
-      detail: "API Security and vulnerability testing",
-    },
-    {
-      title: "COFPS",
-      detail: "Certified Online Fraud Prevention Specialist",
-    },
-    {
-      title:
-        "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate",
-      detail: "",
-    },
-  ],
-  achievements: [
-    {
-      title: "1st Place — CTF, AI & ML Dept.",
-      detail: "St. Joseph's College of Engineering",
-    },
-    {
-      title: "1st Place — V-Vertex CTF",
-      detail: "VIT College",
-    },
-    {
-      title: "8th Place — DEFCON-conducted CTF",
-      detail: "Team event, international level",
-    },
-    {
-      title: "Top 26 of 300+",
-      detail: "TN Government Police CTF Finals",
-    },
-    {
-      title: "3rd Place — Brain Storm Competition",
-      detail:
-        "Debugging, PPT & Hackathon, Dhanalakshmi Engineering College",
-    },
-  ],
   education: [
     {
       degree: "B.E. Computer Science & Engineering (Cyber Security)",
@@ -174,6 +136,68 @@ const defaultContent = {
 };
 
 export type PublicContent = typeof defaultContent;
+
+// Types for the new dedicated models
+export interface CertificationData {
+  id: string;
+  title: string;
+  issuer: string;
+  description: string;
+  detailedContent: string;
+  imageUrl: string;
+  order: number;
+}
+
+export interface AchievementData {
+  id: string;
+  title: string;
+  org: string;
+  description: string;
+  detailedContent: string;
+  imageUrl: string;
+  order: number;
+}
+
+export interface ParticipationData {
+  id: string;
+  title: string;
+  description: string;
+  detailedContent: string;
+  imageUrl: string;
+  certificateUrl: string;
+  order: number;
+}
+
+export interface MemoryCategoryData {
+  id: string;
+  label: string;
+  slug: string;
+  order: number;
+}
+
+export interface MemoryEventData {
+  id: string;
+  categoryId: string;
+  title: string;
+  shortDescription: string;
+  detailedContent: string;
+  order: number;
+}
+
+export interface MediaAssetData {
+  id: string;
+  ownerType: string;
+  ownerId: string;
+  type: string;
+  originalUrl: string;
+  compressedUrl: string;
+  thumbnailUrl: string;
+  isCover: boolean;
+  width: number;
+  height: number;
+  sizeBytes: number;
+  order: number;
+}
 
 /**
  * Fetch all public content from the database.
@@ -215,8 +239,6 @@ export async function getPublicContent(): Promise<PublicContent> {
       skills: get("skills", "all", defaultContent.skills) as typeof defaultContent.skills,
       experience: get("experience", "all", defaultContent.experience) as typeof defaultContent.experience,
       projects: get("projects", "all", defaultContent.projects) as typeof defaultContent.projects,
-      certifications: get("certifications", "all", defaultContent.certifications) as typeof defaultContent.certifications,
-      achievements: get("achievements", "all", defaultContent.achievements) as typeof defaultContent.achievements,
       education: get("education", "all", defaultContent.education) as typeof defaultContent.education,
       extraCurricular: get("extraCurricular", "all", defaultContent.extraCurricular) as string[],
       heroDayImage: get("hero", "dayImage", defaultContent.heroDayImage) as string,
@@ -225,6 +247,89 @@ export async function getPublicContent(): Promise<PublicContent> {
   } catch (error) {
     console.error("Failed to fetch content from DB, using defaults:", error);
     return defaultContent;
+  }
+}
+
+/**
+ * Fetch certifications from dedicated model.
+ */
+export async function getCertifications(): Promise<CertificationData[]> {
+  try {
+    return await prisma.certification.findMany({
+      orderBy: { order: "asc" },
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch achievements from dedicated model.
+ */
+export async function getAchievements(): Promise<AchievementData[]> {
+  try {
+    return await prisma.achievement.findMany({
+      orderBy: { order: "asc" },
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch participations from dedicated model.
+ */
+export async function getParticipations(): Promise<ParticipationData[]> {
+  try {
+    return await prisma.participation.findMany({
+      orderBy: { order: "asc" },
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch memory categories.
+ */
+export async function getMemoryCategories(): Promise<MemoryCategoryData[]> {
+  try {
+    return await prisma.memoryCategory.findMany({
+      orderBy: { order: "asc" },
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch memory events for a category.
+ */
+export async function getMemoryEvents(categoryId?: string): Promise<MemoryEventData[]> {
+  try {
+    return await prisma.memoryEvent.findMany({
+      where: categoryId ? { categoryId } : undefined,
+      orderBy: { order: "asc" },
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch media assets for a given owner.
+ */
+export async function getMediaAssets(
+  ownerType: string,
+  ownerId: string
+): Promise<MediaAssetData[]> {
+  try {
+    return await prisma.mediaAsset.findMany({
+      where: { ownerType, ownerId },
+      orderBy: { order: "asc" },
+    });
+  } catch {
+    return [];
   }
 }
 

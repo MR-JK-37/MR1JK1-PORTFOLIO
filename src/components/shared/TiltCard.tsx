@@ -6,7 +6,7 @@ interface TiltCardProps {
   children: ReactNode;
   className?: string;
   tiltAmount?: number;
-  glowColor?: "blue" | "violet";
+  glowColor?: "blue" | "violet" | "amber";
   scale?: number;
 }
 
@@ -54,7 +54,9 @@ export function TiltCard({
   const glowGradient =
     glowColor === "blue"
       ? "radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(69,211,255,0.12), transparent 60%)"
-      : "radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(178,115,255,0.12), transparent 60%)";
+      : glowColor === "violet"
+      ? "radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(178,115,255,0.12), transparent 60%)"
+      : "radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(240,166,58,0.12), transparent 60%)";
 
   return (
     <div
