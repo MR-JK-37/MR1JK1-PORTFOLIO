@@ -1,3 +1,5 @@
+"use client";
+
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { TiltCard } from "@/components/shared/TiltCard";
 
