@@ -8,46 +8,51 @@ interface SkillsProps {
   skills: Record<string, string[]>;
 }
 
-const categoryPrefixes: Record<string, string> = {
-  "Security Tools": "security_tools",
-  Programming: "programming",
-  "OS / Platforms": "os_platforms",
-  "Focus Areas": "focus_areas",
+const categoryMeta: Record<
+  string,
+  { prefix: string; icon: string; color: "blue" | "violet" | "amber" }
+> = {
+  "Security Tools":  { prefix: "security_tools", icon: "🛡", color: "blue" },
+  Programming:       { prefix: "programming",    icon: "⌨", color: "violet" },
+  "OS / Platforms":  { prefix: "os_platforms",   icon: "💻", color: "blue" },
+  "Focus Areas":     { prefix: "focus_areas",    icon: "🎯", color: "violet" },
+};
+
+const colorMap = {
+  blue:   { text: "var(--color-blue)",   bg: "rgba(69,211,255,0.08)",   border: "rgba(69,211,255,0.22)",   hoverBorder: "rgba(69,211,255,0.55)",   glow: "rgba(69,211,255,0.18)"   },
+  violet: { text: "var(--color-violet)", bg: "rgba(178,115,255,0.08)",  border: "rgba(178,115,255,0.22)",  hoverBorder: "rgba(178,115,255,0.55)",  glow: "rgba(178,115,255,0.18)"  },
+  amber:  { text: "var(--color-amber)",  bg: "rgba(240,166,58,0.08)",   border: "rgba(240,166,58,0.22)",   hoverBorder: "rgba(240,166,58,0.55)",   glow: "rgba(240,166,58,0.18)"   },
 };
 
 export function Skills({ skills }: SkillsProps) {
   const categories = Object.entries(skills);
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <section id="skills" className="section-padding section-lazy">
       <div className="section-max-width">
         <ScrollReveal>
-          <p className="eyebrow mb-3">$ cat skills.conf</p>
-          <h2
-            className="font-[family-name:var(--font-display)] font-bold mb-12"
-            style={{
-              fontSize: "clamp(1.75rem, 1.2rem + 2.5vw, 3rem)",
-            }}
-          >
+          <p className="eyebrow mb-4">$ cat skills.conf</p>
+          <h2 className="section-heading mb-3">
             Technical{" "}
-            <span style={{ color: "var(--color-violet)" }}>Arsenal</span>
+            <span className="neon-violet">Arsenal</span>
           </h2>
+          <p className="text-text-secondary mb-12" style={{ fontSize: "0.95rem", maxWidth: "520px" }}>
+            Tools and technologies I wield in the field.
+          </p>
         </ScrollReveal>
 
-        {/* Asymmetric hacker terminal style layout */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6">
           {categories.map(([category, items], catIdx) => {
+            const meta = categoryMeta[category] ?? {
+              prefix: category.toLowerCase().replace(/\s+/g, "_"),
+              icon: "◈",
+              color: catIdx % 2 === 0 ? "blue" : "violet",
+            } as { prefix: string; icon: string; color: "blue" | "violet" | "amber" };
             const isFeatured = category === "Security Tools";
-            const glowColor = isFeatured ? "blue" : catIdx % 2 === 0 ? "blue" : "violet";
+            const col = colorMap[meta.color];
+            const wrapperClass = `cyber-card-wrapper cyber-card-wrapper-${meta.color}${
+              isFeatured ? " shadow-[0_0_40px_rgba(69,211,255,0.06)]" : ""
+            }`;
 
             return (
               <div
@@ -55,86 +60,87 @@ export function Skills({ skills }: SkillsProps) {
                 className={isFeatured ? "md:col-span-2" : "col-span-1"}
               >
                 <ScrollReveal delay={catIdx * 0.1}>
-                  <TiltCard
-                    className={`cyber-card-wrapper ${
-                      isFeatured
-                        ? "cyber-card-wrapper-blue shadow-[0_0_30px_rgba(69,211,255,0.05)]"
-                        : catIdx % 2 === 0
-                        ? "cyber-card-wrapper-blue"
-                        : "cyber-card-wrapper-violet"
-                    }`}
-                    glowColor={glowColor}
-                  >
+                  <TiltCard className={wrapperClass} glowColor={meta.color} tiltAmount={6}>
                     <div className="cyber-card-inner p-6 md:p-8">
-                      {/* Header with terminal line */}
-                      <div className="flex items-center justify-between mb-6 border-b border-border/40 pb-3">
-                        <div className="flex items-center gap-2">
-                          {isFeatured ? (
-                            <svg
-                              width="16"
-                              height="16"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="var(--color-blue)"
-                              strokeWidth="2"
-                              className="animate-pulse"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.745 3.745 0 011.043 3.296A3.745 3.745 0 0121 12z"
-                              />
-                            </svg>
-                          ) : (
-                            <span
-                              className="w-1.5 h-1.5 rounded-full"
-                              style={{
-                                backgroundColor:
-                                  catIdx % 2 === 0
-                                    ? "var(--color-blue)"
-                                    : "var(--color-violet)",
-                              }}
-                            />
-                          )}
-                          <h3
-                            className="font-[family-name:var(--font-mono)] font-bold tracking-wider uppercase text-xs"
-                            style={{
-                              color: isFeatured
-                                ? "var(--color-blue)"
-                                : catIdx % 2 === 0
-                                ? "var(--color-blue)"
-                                : "var(--color-violet)",
-                            }}
+                      {/* Bottom-left corner accent */}
+                      <div className="cyber-card-corner-bl" />
+
+                      {/* Header */}
+                      <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/30">
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="text-lg leading-none"
+                            aria-hidden="true"
+                            style={{ filter: "drop-shadow(0 0 6px currentColor)" }}
                           >
-                            $ {categoryPrefixes[category] || category.toLowerCase().replace(/\s+/g, "_")}
-                          </h3>
+                            {meta.icon}
+                          </span>
+                          <div>
+                            <h3
+                              className="font-[family-name:var(--font-mono)] font-bold tracking-wider uppercase text-xs"
+                              style={{ color: col.text }}
+                            >
+                              $ {meta.prefix}
+                            </h3>
+                            <p
+                              className="text-text-muted font-[family-name:var(--font-mono)]"
+                              style={{ fontSize: "0.6rem", marginTop: "2px" }}
+                            >
+                              {items.length} modules loaded
+                            </p>
+                          </div>
                         </div>
 
-                        {isFeatured ? (
-                          <span className="text-[8px] font-mono text-blue bg-blue/15 px-2 py-0.5 border border-blue/20 rounded">
-                            SYSTEM_CORE_LEVEL_1
-                          </span>
-                        ) : (
-                          <span className="text-[8px] font-mono text-text-muted">
+                        <div className="flex items-center gap-2">
+                          {isFeatured && (
+                            <span
+                              className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[8px] font-mono border"
+                              style={{
+                                color: col.text,
+                                background: col.bg,
+                                borderColor: col.border,
+                              }}
+                            >
+                              <span className="status-dot" />
+                              ACTIVE
+                            </span>
+                          )}
+                          <span
+                            className="font-mono text-[9px] px-2 py-0.5 rounded border"
+                            style={{
+                              color: "var(--color-text-muted)",
+                              borderColor: "var(--color-border)",
+                              background: "rgba(255,255,255,0.02)",
+                            }}
+                          >
                             SEC_CONF
                           </span>
-                        )}
+                        </div>
                       </div>
 
-                      {/* Tactile staggered pill list */}
-                      <div className="flex flex-wrap gap-2.5">
+                      {/* Skill tags */}
+                      <div className="flex flex-wrap gap-2">
                         {items.map((skill, idx) => (
                           <span
                             key={skill}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all duration-300 ${
-                              isFeatured
-                                ? "bg-gradient-to-r from-blue/10 to-blue/5 border border-blue/20 text-text-primary hover:border-blue hover:text-white hover:shadow-[0_0_15px_rgba(69,211,255,0.2)]"
-                                : catIdx % 2 === 0
-                                ? "bg-panel-light/60 border border-border/80 text-text-secondary hover:border-blue/40 hover:text-blue hover:shadow-[0_0_10px_rgba(69,211,255,0.1)]"
-                                : "bg-panel-light/60 border border-border/80 text-text-secondary hover:border-violet/40 hover:text-violet hover:shadow-[0_0_10px_rgba(178,115,255,0.1)]"
-                            } cursor-default`}
+                            className="px-3 py-1.5 rounded-lg text-xs font-mono transition-all duration-250 cursor-default group/skill"
                             style={{
+                              background: col.bg,
+                              border: `1px solid ${col.border}`,
+                              color: "var(--color-text-secondary)",
                               transform: `translateY(${idx % 2 === 0 ? "1px" : "-1px"})`,
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.currentTarget as HTMLElement).style.borderColor = col.hoverBorder;
+                              (e.currentTarget as HTMLElement).style.color = col.text;
+                              (e.currentTarget as HTMLElement).style.boxShadow = `0 0 14px ${col.glow}`;
+                              (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.currentTarget as HTMLElement).style.borderColor = col.border;
+                              (e.currentTarget as HTMLElement).style.color = "var(--color-text-secondary)";
+                              (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                              (e.currentTarget as HTMLElement).style.transform = `translateY(${idx % 2 === 0 ? "1px" : "-1px"})`;
                             }}
                           >
                             {skill}
