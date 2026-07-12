@@ -6,6 +6,12 @@ import { prisma } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
+    console.log("[SERVER-SIDE ENV CHECK] Cloudinary variables presence:", {
+      CLOUDINARY_CLOUD_NAME: !!process.env.CLOUDINARY_CLOUD_NAME,
+      CLOUDINARY_API_KEY: !!process.env.CLOUDINARY_API_KEY,
+      CLOUDINARY_API_SECRET: !!process.env.CLOUDINARY_API_SECRET,
+    });
+
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get(COOKIE_NAME);
     if (!sessionCookie || !verifySession(sessionCookie.value)) {

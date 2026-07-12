@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { LoginForm } from "@/components/admin/LoginForm";
 
 import { ProfileEditor } from "./ProfileEditor";
@@ -52,10 +52,10 @@ export function AdminLayout({ isFirstRun: initialFirstRun }: AdminLayoutProps) {
     }
   };
 
-  const showToast = (message: string, type: "success" | "error" = "success") => {
+  const showToast = useCallback((message: string, type: "success" | "error" = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
-  };
+  }, []);
 
   if (authenticated === null) {
     return (
