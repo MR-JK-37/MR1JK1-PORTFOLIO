@@ -188,10 +188,12 @@ export function CertsEditor({ showToast }: CertsEditorProps) {
                 <MediaUploader
                   ownerType="certification"
                   ownerId={item.id || `new-cert-${idx}`}
-                  assets={[]}
+                  assets={item.imageUrl ? [{ id: item.imageUrl, type: "image", originalUrl: item.imageUrl, compressedUrl: item.imageUrl, thumbnailUrl: item.imageUrl, isCover: true, sizeBytes: 0 }] : []}
                   onAssetsChange={(assets) => {
                     if (assets.length > 0) {
                       updateCert(idx, "imageUrl", assets[assets.length - 1].compressedUrl || assets[assets.length - 1].originalUrl);
+                    } else {
+                      updateCert(idx, "imageUrl", "");
                     }
                   }}
                   showToast={showToast}
@@ -256,10 +258,12 @@ export function CertsEditor({ showToast }: CertsEditorProps) {
                 <MediaUploader
                   ownerType="achievement"
                   ownerId={item.id || `new-ach-${idx}`}
-                  assets={[]}
+                  assets={item.imageUrl ? [{ id: item.imageUrl, type: "image", originalUrl: item.imageUrl, compressedUrl: item.imageUrl, thumbnailUrl: item.imageUrl, isCover: true, sizeBytes: 0 }] : []}
                   onAssetsChange={(assets) => {
                     if (assets.length > 0) {
                       updateAch(idx, "imageUrl", assets[assets.length - 1].compressedUrl || assets[assets.length - 1].originalUrl);
+                    } else {
+                      updateAch(idx, "imageUrl", "");
                     }
                   }}
                   showToast={showToast}

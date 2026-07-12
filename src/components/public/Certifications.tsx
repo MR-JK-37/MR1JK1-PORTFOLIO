@@ -42,14 +42,9 @@ export function Certifications({
         <div className="section-max-width">
           <ScrollReveal>
             <p className="eyebrow mb-3">$ cat /var/log/achievements</p>
-            <h2
-              className="font-[family-name:var(--font-display)] font-bold mb-12"
-              style={{
-                fontSize: "clamp(1.75rem, 1.2rem + 2.5vw, 3rem)",
-              }}
-            >
+            <h2 className="section-heading mb-12">
               Certifications &{" "}
-              <span style={{ color: "var(--color-amber)" }}>Achievements</span>
+              <span className="neon-violet">Achievements</span>
             </h2>
           </ScrollReveal>
 

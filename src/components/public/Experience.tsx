@@ -38,7 +38,7 @@ export function Experience({ entries }: ExperienceProps) {
           <p className="eyebrow mb-4">$ history | grep work</p>
           <h2 className="section-heading mb-3">
             Experience{" "}
-            <span className="neon-blue">Log</span>
+            <span className="neon-violet">Log</span>
           </h2>
           <p className="text-text-secondary mb-12" style={{ fontSize: "0.95rem", maxWidth: "480px" }}>
             A chronological record of professional engagements.

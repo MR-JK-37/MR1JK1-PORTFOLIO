@@ -18,12 +18,9 @@ export default async function MemoriesPage() {
       <div className="pt-24 min-h-screen" style={{ background: "var(--color-void)" }}>
         <div className="section-max-width px-6">
           <p className="eyebrow mb-3">$ cd ~/memories</p>
-          <h1
-            className="font-[family-name:var(--font-display)] font-bold mb-8"
-            style={{ fontSize: "clamp(2rem, 1.5rem + 3vw, 3.5rem)" }}
-          >
+          <h1 className="section-heading mb-8">
             Memory{" "}
-            <span style={{ color: "var(--color-amber)" }}>Archive</span>
+            <span className="neon-violet">Archive</span>
           </h1>
 
           <MemoriesHub categories={categories} />

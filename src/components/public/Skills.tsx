@@ -10,12 +10,50 @@ interface SkillsProps {
 
 const categoryMeta: Record<
   string,
-  { prefix: string; icon: string; color: "blue" | "violet" | "amber" }
+  { prefix: string; icon: React.ReactNode; color: "blue" | "violet" | "amber" }
 > = {
-  "Security Tools":  { prefix: "security_tools", icon: "🛡", color: "blue" },
-  Programming:       { prefix: "programming",    icon: "⌨", color: "violet" },
-  "OS / Platforms":  { prefix: "os_platforms",   icon: "💻", color: "blue" },
-  "Focus Areas":     { prefix: "focus_areas",    icon: "🎯", color: "violet" },
+  "Security Tools":  {
+    prefix: "security_tools",
+    color: "blue",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    )
+  },
+  Programming:       {
+    prefix: "programming",
+    color: "violet",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 18 22 12 16 6"/>
+        <polyline points="8 6 2 12 8 18"/>
+        <line x1="14" y1="4" x2="10" y2="20"/>
+      </svg>
+    )
+  },
+  "OS / Platforms":  {
+    prefix: "os_platforms",
+    color: "blue",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="2" y1="20" x2="22" y2="20"/>
+        <line x1="12" y1="17" x2="12" y2="20"/>
+      </svg>
+    )
+  },
+  "Focus Areas":     {
+    prefix: "focus_areas",
+    color: "violet",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="6"/>
+        <circle cx="12" cy="12" r="2"/>
+      </svg>
+    )
+  },
 };
 
 const colorMap = {
@@ -45,9 +83,15 @@ export function Skills({ skills }: SkillsProps) {
           {categories.map(([category, items], catIdx) => {
             const meta = categoryMeta[category] ?? {
               prefix: category.toLowerCase().replace(/\s+/g, "_"),
-              icon: "◈",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                  <polyline points="2 17 12 22 22 17"/>
+                  <polyline points="2 12 12 17 22 12"/>
+                </svg>
+              ),
               color: catIdx % 2 === 0 ? "blue" : "violet",
-            } as { prefix: string; icon: string; color: "blue" | "violet" | "amber" };
+            };
             const isFeatured = category === "Security Tools";
             const col = colorMap[meta.color];
             const wrapperClass = `cyber-card-wrapper cyber-card-wrapper-${meta.color}${
@@ -69,9 +113,14 @@ export function Skills({ skills }: SkillsProps) {
                       <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/30">
                         <div className="flex items-center gap-3">
                           <span
-                            className="text-lg leading-none"
+                            className="flex items-center justify-center w-9 h-9 rounded-lg border backdrop-blur-md"
                             aria-hidden="true"
-                            style={{ filter: "drop-shadow(0 0 6px currentColor)" }}
+                            style={{
+                              borderColor: col.border,
+                              background: col.bg,
+                              color: col.text,
+                              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.05), 0 0 8px ${col.glow}`,
+                            }}
                           >
                             {meta.icon}
                           </span>
@@ -93,15 +142,7 @@ export function Skills({ skills }: SkillsProps) {
 
                         <div className="flex items-center gap-2">
                           {isFeatured && (
-                            <span
-                              className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[8px] font-mono border"
-                              style={{
-                                color: col.text,
-                                background: col.bg,
-                                borderColor: col.border,
-                              }}
-                            >
-                              <span className="status-dot" />
+                            <span className="backlit-indicator backlit-indicator-active text-[8px] tracking-wider uppercase">
                               ACTIVE
                             </span>
                           )}

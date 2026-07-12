@@ -18,14 +18,9 @@ export function Education({ entries, extraCurricular }: EducationProps) {
       <div className="section-max-width">
         <ScrollReveal>
           <p className="eyebrow mb-3">$ cat /etc/education</p>
-          <h2
-            className="font-[family-name:var(--font-display)] font-bold mb-12"
-            style={{
-              fontSize: "clamp(1.75rem, 1.2rem + 2.5vw, 3rem)",
-            }}
-          >
+          <h2 className="section-heading mb-12">
             Education{" "}
-            <span style={{ color: "var(--color-blue)" }}>& More</span>
+            <span className="neon-violet">& More</span>
           </h2>
         </ScrollReveal>
 

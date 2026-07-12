@@ -67,8 +67,8 @@ export const V1_ORIGINAL_TOKENS: ThemeTokens = {
   "color-text-muted": "#4a5568",
   "color-border": "#1e293b",
   "color-border-glow": "rgba(69, 211, 255, 0.15)",
-  "spacing-section": "6rem",
-  "spacing-section-sm": "4rem",
+  "spacing-section": "4rem",
+  "spacing-section-sm": "2.5rem",
   "radius-card": "16px 8px 12px 10px",
   "radius-card-alt": "10px 16px 8px 12px",
   "radius-button": "8px 4px 8px 4px",
@@ -110,8 +110,8 @@ export const V2_CINEMATIC_TOKENS: ThemeTokens = {
   "color-text-muted": "#3a4558",
   "color-border": "#162035",
   "color-border-glow": "rgba(0, 229, 255, 0.18)",
-  "spacing-section": "6rem",
-  "spacing-section-sm": "4rem",
+  "spacing-section": "4rem",
+  "spacing-section-sm": "2.5rem",
   "radius-card": "18px 6px 14px 8px",
   "radius-card-alt": "8px 18px 6px 14px",
   "radius-button": "10px 4px 10px 4px",
@@ -131,6 +131,49 @@ export const V2_CINEMATIC_TOKENS: ThemeTokens = {
   "duration-fast": "150ms",
   "duration-normal": "350ms",
   "duration-slow": "700ms",
+};
+
+/**
+ * v3-skeuomorphic token set — the professional, tactile, material redesign.
+ * Brushed panels, edge highlights, inner beveling, and backlit indicator glow.
+ */
+export const V3_SKEUOMORPHIC_TOKENS: ThemeTokens = {
+  "color-void": "#05080c",
+  "color-panel": "#0e1520",
+  "color-panel-light": "#151e2c",
+  "color-surface": "#1a2638",
+  "color-blue": "#00f0ff",
+  "color-blue-dim": "#006c74",
+  "color-violet": "#be88ff",
+  "color-violet-dim": "#6e39a8",
+  "color-amber": "#ffb03a",
+  "color-amber-dim": "#985a10",
+  "color-text-primary": "#f1f5f9",
+  "color-text-secondary": "#94a3b8",
+  "color-text-muted": "#475569",
+  "color-border": "#1e293b",
+  "color-border-glow": "rgba(0, 240, 255, 0.2)",
+  "spacing-section": "4rem",
+  "spacing-section-sm": "2.5rem",
+  "radius-card": "14px",
+  "radius-card-alt": "14px",
+  "radius-button": "8px",
+  "radius-chip": "10px",
+  "shadow-card":
+    "12px 12px 30px rgba(0, 0, 0, 0.85), -6px -6px 20px rgba(255, 255, 255, 0.02), inset 0 2px 3px rgba(255, 255, 255, 0.04), inset 0 -2px 3px rgba(0, 0, 0, 0.6)",
+  "shadow-card-hover":
+    "16px 16px 40px rgba(0, 0, 0, 0.9), -8px -8px 24px rgba(255, 255, 255, 0.03), inset 0 2px 4px rgba(255, 255, 255, 0.06), inset 0 -2px 4px rgba(0, 0, 0, 0.7)",
+  "shadow-card-hover-violet":
+    "16px 16px 40px rgba(0, 0, 0, 0.9), -8px -8px 24px rgba(255, 255, 255, 0.03), inset 0 2px 4px rgba(255, 255, 255, 0.06), inset 0 -2px 4px rgba(0, 0, 0, 0.7)",
+  "shadow-glow-blue":
+    "0 0 20px rgba(0, 240, 255, 0.35), inset 0 0 8px rgba(0, 240, 255, 0.2)",
+  "shadow-glow-violet":
+    "0 0 20px rgba(190, 136, 255, 0.35), inset 0 0 8px rgba(190, 136, 255, 0.2)",
+  "ease-smooth": "cubic-bezier(0.16, 1, 0.3, 1)",
+  "ease-bounce": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+  "duration-fast": "120ms",
+  "duration-normal": "280ms",
+  "duration-slow": "500ms",
 };
 
 /**

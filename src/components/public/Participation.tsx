@@ -27,14 +27,9 @@ export function Participation({ participations }: ParticipationProps) {
             <p className="eyebrow eyebrow-violet mb-3">
               $ ls /var/log/events
             </p>
-            <h2
-              className="font-[family-name:var(--font-display)] font-bold mb-12"
-              style={{
-                fontSize: "clamp(1.75rem, 1.2rem + 2.5vw, 3rem)",
-              }}
-            >
+            <h2 className="section-heading mb-12">
               Event{" "}
-              <span style={{ color: "var(--color-violet)" }}>
+              <span className="neon-violet">
                 Participation
               </span>
             </h2>

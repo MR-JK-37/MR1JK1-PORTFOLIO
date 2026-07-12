@@ -101,7 +101,9 @@ export function MediaUploader({
   const handleDelete = useCallback(
     async (assetId: string) => {
       try {
-        await fetch(`/api/media/${assetId}`, { method: "DELETE" });
+        if (!assetId.startsWith("http") && !assetId.startsWith("/")) {
+          await fetch(`/api/media/${assetId}`, { method: "DELETE" });
+        }
         const filtered = assets.filter((a) => a.id !== assetId);
         onAssetsChange(filtered);
         showToast("Media removed");

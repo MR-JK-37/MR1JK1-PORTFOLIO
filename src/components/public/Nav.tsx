@@ -100,10 +100,10 @@ export function Nav({ links, forceVisible }: NavProps) {
   return (
     <>
       <nav
-        className={`fixed left-1/2 -translate-x-1/2 z-[100] transition-all duration-500 rounded-full border ${
+        className={`fixed left-1/2 -translate-x-1/2 z-[100] transition-all duration-500 rounded-full ${
           scrolled || forceVisible
-            ? "top-3 w-[90%] max-w-5xl h-12 px-6 border-border/40 bg-panel/60 backdrop-blur-xl shadow-[var(--shadow-card)]"
-            : "top-6 w-[95%] max-w-6xl h-16 px-8 border-transparent bg-transparent shadow-none backdrop-blur-none"
+            ? "top-3 w-[90%] max-w-5xl h-12 px-6 border border-white/5 border-t-white/12 border-b-black/50 bg-gradient-to-b from-panel-light to-panel backdrop-blur-xl shadow-[0_8px_24px_rgba(0,0,0,0.7)]"
+            : "top-6 w-[95%] max-w-6xl h-16 px-8 border border-transparent bg-transparent shadow-none backdrop-blur-none"
         }`}
         role="navigation"
         aria-label="Main navigation"
@@ -131,7 +131,7 @@ export function Nav({ links, forceVisible }: NavProps) {
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-4">
             {allNavItems.map((s) => {
               const isActive = activeSection === s.href;
               const isExternal = s.href.startsWith("/");
@@ -139,7 +139,7 @@ export function Nav({ links, forceVisible }: NavProps) {
                 <Link
                   key={s.href}
                   href={s.href}
-                  className="relative pb-1 text-xs font-[family-name:var(--font-mono)] tracking-wider uppercase transition-colors duration-300 text-text-secondary hover:text-text-primary"
+                  className="relative px-3 py-1.5 rounded-lg text-xs font-[family-name:var(--font-mono)] tracking-wider uppercase transition-colors duration-300 text-text-secondary hover:text-text-primary"
                 >
                   {s.label}
                 </Link>
@@ -147,16 +147,9 @@ export function Nav({ links, forceVisible }: NavProps) {
                 <a
                   key={s.href}
                   href={s.href}
-                  className={`relative pb-1 text-xs font-[family-name:var(--font-mono)] tracking-wider uppercase transition-colors duration-300 group ${isActive ? "text-blue font-semibold" : "text-text-secondary hover:text-text-primary"}`}
+                  className={`relative px-3 py-1.5 rounded-lg text-xs font-[family-name:var(--font-mono)] tracking-wider uppercase transition-all duration-300 ${isActive ? "text-blue skeuo-nav-active font-semibold" : "text-text-secondary hover:text-text-primary hover:bg-white/3"}`}
                 >
                   {s.label}
-                  <span
-                    className={`absolute bottom-0 left-0 h-[2px] bg-blue transition-all duration-300 ${isActive ? "w-full shadow-[0_0_12px_rgba(69,211,255,0.8)]" : "w-0 group-hover:w-full"}`}
-                    aria-hidden="true"
-                  />
-                  {isActive && (
-                    <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-blue animate-ping" />
-                  )}
                 </a>
               );
             })}

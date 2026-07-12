@@ -340,7 +340,7 @@ export function Hero({
 
           {/* CTAs */}
           <div className="flex flex-wrap gap-4 justify-start">
-            <a href="#projects" className="btn-primary">
+            <a href="#projects" className="skeuo-btn-primary">
               <svg
                 width="16"
                 height="16"
@@ -357,7 +357,7 @@ export function Hero({
               </svg>
               View Projects
             </a>
-            <a href="#contact" className="btn-secondary">
+            <a href="#contact" className="skeuo-btn-secondary">
               Contact Me
             </a>
           </div>

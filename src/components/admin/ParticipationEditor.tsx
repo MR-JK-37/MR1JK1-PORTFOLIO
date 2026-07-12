@@ -178,11 +178,13 @@ export function ParticipationEditor({ showToast }: ParticipationEditorProps) {
             <MediaUploader
               ownerType="participation"
               ownerId={item.id || `new-${idx}`}
-              assets={[]}
+              assets={item.imageUrl ? [{ id: item.imageUrl, type: "image", originalUrl: item.imageUrl, compressedUrl: item.imageUrl, thumbnailUrl: item.imageUrl, isCover: true, sizeBytes: 0 }] : []}
               onAssetsChange={(assets) => {
                 if (assets.length > 0) {
                   const lastAsset = assets[assets.length - 1];
                   updateField(idx, "imageUrl", lastAsset.compressedUrl || lastAsset.originalUrl);
+                } else {
+                  updateField(idx, "imageUrl", "");
                 }
               }}
               showToast={showToast}

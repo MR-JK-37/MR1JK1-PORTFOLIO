@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 import { COOKIE_NAME, verifySession } from "@/lib/auth";
 import { uploadToCloudinary, isCloudinaryConfigured } from "@/lib/cloudinary";
 import { prisma } from "@/lib/db";
@@ -40,46 +38,30 @@ export async function POST(request: Request) {
     const resourceType = isVideo ? "video" : "image";
     const folder = `portfolio/${ownerType || "general"}`;
 
-    let result;
-    let provider = "cloudinary";
-
     if (!isCloudinaryConfigured()) {
-      provider = "local";
-      const uploadsDir = join(process.cwd(), "public", "uploads", "media");
-      await mkdir(uploadsDir, { recursive: true });
-
-      const sanitizedFilename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-      const filepath = join(uploadsDir, sanitizedFilename);
-      await writeFile(filepath, buffer);
-
-      const localUrl = `/uploads/media/${sanitizedFilename}`;
-      result = {
-        type: resourceType as "image" | "video",
-        originalUrl: localUrl,
-        compressedUrl: localUrl,
-        thumbnailUrl: localUrl,
-        width: 0,
-        height: 0,
-        sizeBytes: buffer.length,
-      };
-    } else {
-      // Direct Cloudinary Upload
-      const cloudinaryResult = await uploadToCloudinary(
-        buffer,
-        folder,
-        resourceType as "image" | "video",
-        file.name
+      return NextResponse.json(
+        { error: "Cloudinary credentials not configured. Serverless environments require Cloudinary uploads." },
+        { status: 500 }
       );
-      result = {
-        type: cloudinaryResult.type,
-        originalUrl: cloudinaryResult.originalUrl,
-        compressedUrl: cloudinaryResult.compressedUrl,
-        thumbnailUrl: cloudinaryResult.thumbnailUrl,
-        width: cloudinaryResult.width,
-        height: cloudinaryResult.height,
-        sizeBytes: cloudinaryResult.sizeBytes,
-      };
     }
+
+    // Direct Cloudinary Upload
+    const cloudinaryResult = await uploadToCloudinary(
+      buffer,
+      folder,
+      resourceType as "image" | "video",
+      file.name
+    );
+
+    const result = {
+      type: cloudinaryResult.type,
+      originalUrl: cloudinaryResult.originalUrl,
+      compressedUrl: cloudinaryResult.compressedUrl,
+      thumbnailUrl: cloudinaryResult.thumbnailUrl,
+      width: cloudinaryResult.width,
+      height: cloudinaryResult.height,
+      sizeBytes: cloudinaryResult.sizeBytes,
+    };
 
     // Save to MediaAsset table
     const asset = await prisma.mediaAsset.create({
@@ -100,7 +82,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       asset,
       originalSize: buffer.length,
-      provider,
+      provider: "cloudinary",
     });
   } catch (error: any) {
     console.error("Media upload error:", error);
@@ -110,3 +92,4 @@ export async function POST(request: Request) {
     );
   }
 }
+

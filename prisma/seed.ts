@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { V1_ORIGINAL_TOKENS, V2_CINEMATIC_TOKENS } from "../src/lib/theme";
+import { V1_ORIGINAL_TOKENS, V2_CINEMATIC_TOKENS, V3_SKEUOMORPHIC_TOKENS } from "../src/lib/theme";
 
 const prisma = new PrismaClient();
 
@@ -232,13 +232,23 @@ async function main() {
   });
   console.log("✅ Theme v2-cinematic saved with ID:", v2.id);
 
-  // Set active theme to v1-original
+  const v3 = await prisma.themeVersion.upsert({
+    where: { label: "v3-skeuomorphic" },
+    update: { tokensJson: JSON.stringify(V3_SKEUOMORPHIC_TOKENS) },
+    create: {
+      label: "v3-skeuomorphic",
+      tokensJson: JSON.stringify(V3_SKEUOMORPHIC_TOKENS),
+    },
+  });
+  console.log("✅ Theme v3-skeuomorphic saved with ID:", v3.id);
+
+  // Set active theme to v3-skeuomorphic
   await prisma.appSettings.upsert({
     where: { id: "singleton" },
-    update: { activeThemeId: v1.id },
-    create: { id: "singleton", activeThemeId: v1.id },
+    update: { activeThemeId: v3.id },
+    create: { id: "singleton", activeThemeId: v3.id },
   });
-  console.log("✅ Active theme set to v1-original.");
+  console.log("✅ Active theme set to v3-skeuomorphic.");
 
   console.log("\n🎉 Seed complete!");
   console.log("ℹ️  No admin user created — use the /admin setup flow to create one.");

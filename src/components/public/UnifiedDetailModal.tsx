@@ -297,7 +297,12 @@ export function UnifiedDetailModal({
             {/* Footer Metadata */}
             <div className="mt-8 pt-4 border-t border-border/20 flex items-center justify-between text-[10px] font-mono text-text-muted">
               <span>STATUS: VERIFIED</span>
-              <span>PROVIDER: CLOUDINARY</span>
+              <span>PROVIDER: {(() => {
+                const firstImageUrl = allImages[0]?.originalUrl || "";
+                if (firstImageUrl.includes("res.cloudinary.com")) return "CLOUDINARY";
+                if (firstImageUrl.startsWith("/") || firstImageUrl.includes("uploads/")) return "LOCAL";
+                return "SYSTEM";
+              })()}</span>
             </div>
           </div>
         </div>

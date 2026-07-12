@@ -85,7 +85,7 @@ export function Contact({ email, phone, location, links }: ContactProps) {
           <p className="eyebrow mb-4">$ netcat --connect</p>
           <h2 className="section-heading mb-3">
             Get In{" "}
-            <span className="neon-blue">Touch</span>
+            <span className="neon-violet">Touch</span>
           </h2>
           <p className="text-text-secondary mb-12" style={{ fontSize: "0.95rem", maxWidth: "480px" }}>
             Open to opportunities, collaborations, and interesting conversations.

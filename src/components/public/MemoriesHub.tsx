@@ -62,17 +62,17 @@ export function MemoriesHub({ categories }: MemoriesHubProps) {
   return (
     <>
       {/* Category sub-navigation: Tactile Segmented Control */}
-      <div className="inline-flex p-1.5 rounded-2xl bg-void/80 border border-border/40 shadow-[inset_2px_2px_8px_rgba(0,0,0,0.8)] mb-10 overflow-x-auto max-w-full">
+      <div className="skeuo-tabs-container mb-10 overflow-x-auto max-w-full">
         {categories.map((cat) => {
           const isActive = cat.id === activeCategory;
           return (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-5 py-2 rounded-xl text-xs font-[family-name:var(--font-mono)] transition-all duration-300 ${
+              className={`skeuo-tab-btn transition-all duration-300 ${
                 isActive
-                  ? "bg-amber/10 border border-amber/35 text-amber shadow-[inset_1px_1px_3px_rgba(0,0,0,0.5),0_0_15px_rgba(240,166,58,0.15)] font-semibold"
-                  : "text-text-secondary hover:text-text-primary border border-transparent"
+                  ? "skeuo-tab-btn-active font-semibold !text-amber border-amber/20 shadow-[0_3px_6px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08),0_0_10px_rgba(240,166,58,0.15)]"
+                  : "hover:text-text-primary"
               }`}
             >
               {cat.label}
